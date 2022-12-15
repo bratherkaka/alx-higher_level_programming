@@ -1,4 +1,7 @@
 #!/usr/bin/python3
-for letter in range(97, 123):
-    if chr(letter) is not 'q' and chr(letter) is not 'e':
-        print("{}".format(chr(letter)), end="")
+# Loop through the alphabet using the ASCII values of the characters
+for letter in range(ord('a'), ord('z') + 1):
+    # Check if the current character is not 'q' or 'e'
+    if chr(letter) != 'q' and chr(letter) != 'e':
+        # Print the character without a newline at the end
+        print(chr(letter), end='')
