@@ -5,3 +5,4 @@ for letter in range(ord('a'), ord('z') + 1):
     if chr(letter) != 'q' and chr(letter) != 'e':
         # Print the character without a newline at the end
         print(chr(letter), end='')
+
