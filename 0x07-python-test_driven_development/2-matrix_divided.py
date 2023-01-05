@@ -1,9 +1,4 @@
 #!/usr/bin/python3
-"""
-Module Matrix_divided
-Divided matrix
-"""
-
 
 def matrix_divided(matrix, div):
     """Returns a matrix
