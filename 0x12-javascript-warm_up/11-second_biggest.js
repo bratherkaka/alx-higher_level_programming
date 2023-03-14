@@ -1,10 +1,17 @@
 #!/usr/bin/node
 
-const args = process.argv.slice(2).map(Number);
+const myObject = {
+  type: 'object',
+  value: 12,
+  incr: function() {
+    this.value++;
+  }
+};
 
-if (args.length < 2) {
-  console.log(0);
-} else {
-  const sortedArgs = args.sort((a, b) => b - a);
-  console.log(sortedArgs[1]);
-}
+console.log(myObject);
+myObject.incr();
+console.log(myObject);
+myObject.incr();
+console.log(myObject);
+myObject.incr();
+console.log(myObject);
