@@ -1,18 +1,38 @@
 #!/usr/bin/python3
 """
-Lists all states from the database
-It takes 3 arguments: mysql username, mysql password and database name
+Script that lists all states with a name starting with N (upper N) from the
+database hbtn_0e_0_usa.
 """
 
 import MySQLdb
-from sys import argv
+import sys
 
-if __name__ == "__main__":
-    db = MySQLdb.connect(host="localhost",
-                         user=argv[1], passwd=argv[2], db=argv[3])
+if __name__ == '__main__':
+    username, password, database = sys.argv[1], sys.argv[2], sys.argv[3]
+
+    # Open database connection
+    db = MySQLdb.connect(host='localhost',
+                         port=3306,
+                         user=username,
+                         passwd=password,
+                         db=database)
+
+    # prepare a cursor object using cursor() method
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM states ORDER BY states.id ASC")
-    for state in cursor.fetchall():
-        print(state)
-    cursor.close()
+
+    # Prepare SQL query to fetch all the states with name starting with N
+    sql = "SELECT * FROM states WHERE name LIKE BINARY 'N%' ORDER BY id ASC"
+
+    try:
+        # Execute the SQL command
+        cursor.execute(sql)
+        # Fetch all the rows in a list of lists.
+        results = cursor.fetchall()
+        for row in results:
+            print(row)
+    except Exception as e:
+        print("Error: unable to fetch data")
+        print(e)
+
+    # disconnect from server
     db.close()
