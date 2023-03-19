@@ -1,22 +1,35 @@
 #!/usr/bin/python3
-# Lists all City objects from the database hbtn_0e_14_usa.
-# Usage: ./14-model_city_fetch_by_state.py <mysql username> /
-#                                          <mysql password> /
-#                                          <database name>
+"""
+Script that lists all City objects from the database hbtn_0e_14_usa
+"""
+
 import sys
-from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from model_state import State
+from sqlalchemy import create_engine
+from model_state import Base, State
 from model_city import City
 
-if __name__ == "__main__":
-    engine = create_engine("mysql+mysqldb://{}:{}@localhost/{}"
-                           .format(sys.argv[1], sys.argv[2], sys.argv[3]),
+
+if __name__ == '__main__':
+    # Get command line arguments
+    mysql_user = sys.argv[1]
+    mysql_password = sys.argv[2]
+    db_name = sys.argv[3]
+
+    # Create SQLAlchemy engine to connect to MySQL server
+    engine = create_engine('mysql+mysqldb://{}:{}@localhost:3306/{}'
+                           .format(mysql_user, mysql_password, db_name),
                            pool_pre_ping=True)
+
+    # Create a configured Session class
     Session = sessionmaker(bind=engine)
+
+    # Create a session
     session = Session()
 
-    for city, state in session.query(City, State) \
-                              .filter(City.state_id == State.id) \
-                              .order_by(City.id):
-        print("{}: ({}) {}".format(state.name, city.id, city.name))
+    # Query for all cities and their associated state names
+    query = session.query(State, City).filter(State.id == City.state_id).order_by(City.id)
+
+    # Print out the results
+    for state, city in query.all():
+        print(str(city))
