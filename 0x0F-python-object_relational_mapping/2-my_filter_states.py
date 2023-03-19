@@ -1,30 +1,44 @@
 #!/usr/bin/python3
-"""Module to filter states by name using MySQLdb"""
+"""
+Script that takes in an argument and displays all values in the states table of
+hbtn_0e_0_usa where name matches the argument.
+"""
 
-import MySQLdb
 import sys
+import MySQLdb
 
-if __name__ == "__main__":
-    args = sys.argv[1:]
-    if len(args) == 4:
-        user = args[0]
-        password = args[1]
-        db_name = args[2]
-        state_name = args[3]
 
-        db = MySQLdb.connect(
-            host="localhost",
-            user=user,
-            passwd=password,
-            db=db_name,
-            port=3306
-        )
-        cursor = db.cursor()
-        query = "SELECT * FROM states WHERE name='{}' ORDER BY id ASC".format(state_name)
-        cursor.execute(query)
+if __name__ == '__main__':
+    # Check command line arguments
+    if len(sys.argv) != 5:
+        print('Usage: {} username password database state_name'.format(
+            sys.argv[0]))
+        sys.exit(1)
 
-        for row in cursor.fetchall():
-            print(row)
+    # Get command line arguments
+    username = sys.argv[1]
+    password = sys.argv[2]
+    database = sys.argv[3]
+    state_name = sys.argv[4]
 
-        cursor.close()
-        db.close()
+    # Connect to MySQL database
+    db = MySQLdb.connect(host='localhost', port=3306, user=username,
+                         passwd=password, db=database)
+
+    # Create a cursor to execute SQL queries
+    cur = db.cursor()
+
+    # Construct SQL query with user input
+    query = "SELECT * FROM states WHERE name='{}' ORDER BY id ASC".format(
+        state_name)
+
+    # Execute SQL query
+    cur.execute(query)
+
+    # Print results
+    for row in cur.fetchall():
+        print(row)
+
+    # Close cursor and database connection
+    cur.close()
+    db.close()
