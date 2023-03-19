@@ -1,19 +1,41 @@
 #!/usr/bin/python3
-# Displays all cities of a given state from the
-# states table of the database hbtn_0e_4_usa.
-# Safe from SQL injections.
-# Usage: ./5-filter_cities.py <mysql username> \
-#                             <mysql password> \
-#                             <database name> \
-#                             <state name searched>
-import sys
-import MySQLdb
+"""
+This module lists all cities of a given state
+"""
 
-if __name__ == "__main__":
-    db = MySQLdb.connect(user=sys.argv[1], passwd=sys.argv[2], db=sys.argv[3])
-    c = db.cursor()
-    c.execute("SELECT * FROM `cities` as `c` \
-                INNER JOIN `states` as `s` \
-                   ON `c`.`state_id` = `s`.`id` \
-                ORDER BY `c`.`id`")
-    print(", ".join([ct[2] for ct in c.fetchall() if ct[4] == sys.argv[4]]))
+import MySQLdb
+import sys
+
+
+def filter_cities():
+    """
+    This function filters and displays all cities of a given state
+    """
+    # Connect to MySQL database
+    db = MySQLdb.connect(host="localhost", port=3306, user=sys.argv[1],
+                         passwd=sys.argv[2], db=sys.argv[3], charset="utf8")
+
+    # Create a cursor to navigate the database
+    cursor = db.cursor()
+
+    # Execute SQL query to select all cities of the given state
+    cursor.execute("SELECT cities.name FROM cities JOIN states ON \
+                    cities.state_id = states.id WHERE states.name = %s \
+                    ORDER BY cities.id ASC", (sys.argv[4], ))
+
+    # Fetch all the rows
+    rows = cursor.fetchall()
+
+    # Close cursor and database
+    cursor.close()
+    db.close()
+
+    # Join the results into a string
+    cities = ', '.join(row[0] for row in rows)
+
+    # Print the results
+    print(cities)
+
+
+if __name__ == '__main__':
+    filter_cities()
