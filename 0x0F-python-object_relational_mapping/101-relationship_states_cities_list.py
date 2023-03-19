@@ -1,22 +1,39 @@
 #!/usr/bin/python3
-# Lists all States and corresponding Cities in the database hbtn_0e_101_usa.
-# Usage: ./101-relationship_states_cities_list.py <mysql username> /
-#                                                 <mysql password> /
-#                                                 <database name>
+"""
+Lists all State objects, and corresponding City objects,
+contained in the database hbtn_0e_101_usa
+"""
+
 import sys
+from relationship_state import State, Base
+from relationship_city import City
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from relationship_state import State
-from relationship_city import City
 
-if __name__ == "__main__":
-    engine = create_engine("mysql+mysqldb://{}:{}@localhost/{}"
-                           .format(sys.argv[1], sys.argv[2], sys.argv[3]),
-                           pool_pre_ping=True)
+
+if __name__ == '__main__':
+    # Get database credentials
+    mysql_username = sys.argv[1]
+    mysql_password = sys.argv[2]
+    database_name = sys.argv[3]
+
+    # Create connection to database
+    engine = create_engine('mysql+mysqldb://{}:{}@localhost:3306/{}'
+                           .format(mysql_username, mysql_password,
+                                   database_name), pool_pre_ping=True)
+
+    # Create all tables in the database
+    Base.metadata.create_all(engine)
+
+    # Create a session to retrieve data
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    for state in session.query(State).order_by(State.id):
-        print("{}: {}".format(state.id, state.name))
+    # Retrieve all State objects with their corresponding City objects
+    result = session.query(State).order_by(State.id).all()
+
+    # Print the results
+    for state in result:
+        print('{}: {}'.format(state.id, state.name))
         for city in state.cities:
-            print("    {}: {}".format(city.id, city.name))
+            print('\t{}: {}'.format(city.id, city.name))
