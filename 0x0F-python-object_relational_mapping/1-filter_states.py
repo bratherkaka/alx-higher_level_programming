@@ -3,8 +3,6 @@
 """
 import MySQLdb
 import sys
-
-
 if __name__ == "__main__":
     # Connection parameters
     username = sys.argv[1]
@@ -25,3 +23,4 @@ if __name__ == "__main__":
     # Close connection
     cursor.close()
     db.close()
+    
