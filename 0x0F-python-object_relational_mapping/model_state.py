@@ -1,17 +1,20 @@
 #!/usr/bin/python3
-"""
-Defines the State class and a Base instance for ORM.
+"""model_state module
+
+This module defines the State class, which represents the states table in the
+MySQL database.
 """
 
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
 class State(Base):
-    
-    """
-    State class that links to the MySQL table states.
+    """State class
+
+    This class inherits from Base and represents the states table in the MySQL
+    database.
     """
     __tablename__ = 'states'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
