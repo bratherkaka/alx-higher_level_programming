@@ -1,34 +1,26 @@
 #!/usr/bin/python3
-"""Module for filtering states by name"""
+"""2-my_filter_states.py - Script that displays all values in the states table where name matches the argument"""
 
-import sys
 import MySQLdb
+import sys
 
-if __name__ == "__main__":
-    if len(sys.argv) != 5:
-        print("Usage: {} username password database_name state_name".format(
-            sys.argv[0]))
-        sys.exit(1)
-
+if __name__ == '__main__':
     username = sys.argv[1]
     password = sys.argv[2]
-    database_name = sys.argv[3]
+    db_name = sys.argv[3]
     state_name = sys.argv[4]
 
-    db = MySQLdb.connect(
-        host="localhost",
-        port=3306,
-        user=username,
-        passwd=password,
-        db=database_name)
+    db = MySQLdb.connect(host="localhost", port=3306,
+                         user=username, passwd=password, db=db_name)
 
-    cur = db.cursor()
-    cur.execute("SELECT * FROM states WHERE name = '{}' ORDER BY id ASC"
-                .format(state_name))
+    cursor = db.cursor()
+    query = "SELECT * FROM states WHERE name LIKE BINARY %s ORDER BY id ASC"
+    cursor.execute(query, (state_name,))
 
-    rows = cur.fetchall()
+    rows = cursor.fetchall()
+
     for row in rows:
         print(row)
 
-    cur.close()
+    cursor.close()
     db.close()
