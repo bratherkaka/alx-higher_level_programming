@@ -1,21 +1,14 @@
 #!/usr/bin/python3
-"""model_state module
+"""6-model_state script
 
-This module defines the State class, which represents the states table in the
-MySQL database.
+This script connects to a MySQL server, creates the states table, and links the
+State class to the states table in the database.
 """
 
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
+import sys
+from sqlalchemy import create_engine
+from model_state import Base, State
 
-Base = declarative_base()
-
-class State(Base):
-    """State class
-
-    This class inherits from Base and represents the states table in the MySQL
-    database.
-    """
-    __tablename__ = 'states'
-    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    name = Column(String(128), nullable=False)
+if __name__ == "__main__":
+    engine = create_engine(f'mysql+mysqldb://{sys.argv[1]}:{sys.argv[2]}@localhost/{sys.argv[3]}', pool_pre_ping=True)
+    Base.metadata.create_all(engine)
